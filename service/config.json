@@ -9,6 +9,7 @@
 	},
 	"ali": {
 		"endpoint": "abc",
+		"bucket": "bb",
 		"access": {
 			"id": "aa",
 			"secret": "cc"
