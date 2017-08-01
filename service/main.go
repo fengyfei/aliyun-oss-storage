@@ -27,28 +27,8 @@
  *     Initial: 2017/08/01        Liu JiaChang
  */
 
-package initial
+package main
 
-import (
-	"aliyun-oss-storage/config"
-	"aliyun-oss-storage/orm/cockroach"
-)
-
-var (
-	// DbConnPool connect pool
-	DbConnPool *cockroach.Pool
-)
-
-// InitConf intiacl config
-func InitConf() {
-	config.ReadConfiguration()
-}
-
-// InitCockroachPool initial cockroach pool
-func InitCockroachPool() {
-	DbConnPool = cockroach.NewPool(config.Conf.DbURL, config.Conf.PoolSize)
-
-	if DbConnPool == nil {
-		panic("Cockroach DB connection error")
-	}
+func main() {
+	startService()
 }

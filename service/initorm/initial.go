@@ -27,37 +27,22 @@
  *     Initial: 2017/08/01        Liu JiaChang
  */
 
-package config
+package initorm
 
 import (
-	"github.com/spf13/viper"
+	"aliyun-oss-storage/orm/cockroach"
 )
-
-type workServerConfig struct {
-	Address  string
-	IsDebug  bool
-	DbURL    string
-	PoolSize int
-}
 
 var (
-	// Conf is a config
-	Conf *workServerConfig
+	// DbConnPool connect pool
+	DbConnPool *cockroach.Pool
 )
 
-// ReadConfiguration initial read config
-func ReadConfiguration() {
-	viper.AddConfigPath("./")
-	viper.SetConfigName("config")
+// InitCockroachPool initial cockroach pool
+func InitCockroachPool(url string, size int) {
+	DbConnPool = cockroach.NewPool(url, size)
 
-	if err := viper.ReadInConfig(); err != nil {
-		panic(err)
-	}
-
-	Conf = &workServerConfig{
-		Address:  viper.GetString("server.address"),
-		IsDebug:  viper.GetBool("server.debug"),
-		DbURL:    viper.GetString("cockroach.url"),
-		PoolSize: viper.GetInt("cockroach.size"),
+	if DbConnPool == nil {
+		panic("Cockroach DB connection error")
 	}
 }
