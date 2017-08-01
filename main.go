@@ -33,10 +33,10 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
-	"Winston/config"
-	"Winston/general"
-	"Winston/initial"
-	"Winston/router"
+	"aliyun-oss-storage/general"
+	"aliyun-oss-storage/router"
+	"aliyun-oss-storage/initial"
+	"aliyun-oss-storage/config"
 )
 
 func main() {

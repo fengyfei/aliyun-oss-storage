@@ -38,7 +38,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/gommon/log"
 
-	"Winston/orm"
+	"aliyun-oss-storage/orm"
 )
 
 const (
