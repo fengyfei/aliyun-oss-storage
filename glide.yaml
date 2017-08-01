@@ -17,3 +17,5 @@ import:
   version: ^1.5.0
 - package: gopkg.in/go-playground/validator.v9
   version: ^9.5.0
+- package: github.com/aliyun/aliyun-oss-go-sdk
+  version: ^1.5.0

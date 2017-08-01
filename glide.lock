@@ -1,6 +1,8 @@
-hash: 88395ef49957b51455cfd833c4848b17de44814759dc132878a20c985f983003
-updated: 2017-08-01T14:53:53.623493608+08:00
+hash: 469a5783247d820bd0ad1a1bceca0334f837789e9da21a34207ed213d4f9585e
+updated: 2017-08-01T16:06:00.26387692+08:00
 imports:
+- name: github.com/aliyun/aliyun-oss-go-sdk
+  version: 238969d88b7eabd7102466f4097dd776cb8bba34
 - name: github.com/dgrijalva/jwt-go
   version: d2709f9f1f31ebcda9651b03077758c1f3a0018c
 - name: github.com/fsnotify/fsnotify
@@ -84,8 +86,11 @@ imports:
   - internal/color
   - internal/exit
   - zapcore
-- name: golang.org/x/crypto/acme/autocert
-  version: 6914964337150723782436d56b3f21610a74ce7b
+- name: golang.org/x/crypto
+  version: 9ef620b9ca2f82b55030ffd4f41327fa9e77a92c
+  subpackages:
+  - acme
+  - acme/autocert
 - name: golang.org/x/sys
   version: 9a7256cb28ed514b4e1e5f68959914c4c28a92e0
   subpackages:
