@@ -36,7 +36,6 @@ import (
 	"aliyun-oss-storage/ali"
 	"aliyun-oss-storage/general"
 	"aliyun-oss-storage/router"
-	"aliyun-oss-storage/service/initorm"
 )
 
 func startService() {
@@ -54,6 +53,5 @@ func startService() {
 
 func init() {
 	readConfiguration()
-	initorm.InitCockroachPool(Conf.DbURL, Conf.PoolSize)
 	ali.Connection(Conf.EndPoint, Conf.AccessKeyID, Conf.AccessKeySecret)
 }
