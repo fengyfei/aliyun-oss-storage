@@ -46,7 +46,7 @@ func InitConf() {
 
 // InitCockroachPool initial cockroach pool
 func InitCockroachPool() {
-	DbConnPool = cockroach.NewPool(config.Conf.DbUrl, config.Conf.PoolSize)
+	DbConnPool = cockroach.NewPool(config.Conf.DbURL, config.Conf.PoolSize)
 
 	if DbConnPool == nil {
 		panic("Cockroach DB connection error")
