@@ -41,6 +41,7 @@ type workServerConfig struct {
 	EndPoint        string
 	AccessKeyID     string
 	AccessKeySecret string
+	BucketName      string
 }
 
 var (
@@ -65,5 +66,6 @@ func readConfiguration() {
 		EndPoint:        viper.GetString("ali.endpoint"),
 		AccessKeyID:     viper.GetString("ali.access.id"),
 		AccessKeySecret: viper.GetString("ali.access.secret"),
+		BucketName:      viper.GetString("ali.bucket"),
 	}
 }
