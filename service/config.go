@@ -30,29 +30,40 @@
 package main
 
 import (
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
-
-	"aliyun-oss-storage/config"
-	"aliyun-oss-storage/general"
-	"aliyun-oss-storage/initial"
-	"aliyun-oss-storage/router"
+	"github.com/spf13/viper"
 )
 
-func main() {
-	server := echo.New()
-
-	server.Use(middleware.Recover())
-
-	server.HTTPErrorHandler = general.EchoRestfulErrorHandler
-	server.Validator = general.NewEchoValidator()
-
-	router.InitRouter(server)
-
-	server.Start(config.Conf.Address)
+type workServerConfig struct {
+	Address         string
+	IsDebug         bool
+	DbURL           string
+	PoolSize        int
+	EndPoint        string
+	AccessKeyID     string
+	AccessKeySecret string
 }
 
-func init() {
-	initial.InitConf()
-	initial.InitCockroachPool()
+var (
+	// Conf is a config
+	Conf *workServerConfig
+)
+
+// ReadConfiguration initial read config
+func readConfiguration() {
+	viper.AddConfigPath("./")
+	viper.SetConfigName("config")
+
+	if err := viper.ReadInConfig(); err != nil {
+		panic(err)
+	}
+
+	Conf = &workServerConfig{
+		Address:         viper.GetString("server.address"),
+		IsDebug:         viper.GetBool("server.debug"),
+		DbURL:           viper.GetString("cockroach.url"),
+		PoolSize:        viper.GetInt("cockroach.size"),
+		EndPoint:        viper.GetString("ali.endpoint"),
+		AccessKeyID:     viper.GetString("ali.access.id"),
+		AccessKeySecret: viper.GetString("ali.access.secret"),
+	}
 }

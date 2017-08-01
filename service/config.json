@@ -6,5 +6,12 @@
   "cockroach": {
     "url": "postgresql://core_acc:J8Mct1UxL5@10.0.0.253:26257/core?sslmode=disable",
     "size": 50
-  }
+	},
+	"ali": {
+		"endpoint": "abc",
+		"access": {
+			"id": "aa",
+			"secret": "cc"
+		}
+	}
 }
