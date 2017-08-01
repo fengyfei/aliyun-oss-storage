@@ -30,24 +30,23 @@
 package log
 
 import (
-	"fmt"
-	"log"
-
 	"go.uber.org/zap"
 )
 
-// RecordLog
+// RecordLog is receiver.
 type RecordLog struct{}
 
 var (
 	// Logger common logger
 	Logger *RecordLog
 	zapLog *zap.Logger
+	sugar  *zap.SugaredLogger
 )
 
 func init() {
 	Logger = &RecordLog{}
 	zapLog, _ = zap.NewDevelopment()
+	sugar = zapLog.Sugar()
 }
 
 func (l *RecordLog) Error(desc string, err error) {
@@ -55,24 +54,21 @@ func (l *RecordLog) Error(desc string, err error) {
 }
 
 // Debug debug log
-func (l *RecordLog) Debug(format string, a ...interface{}) {
-	info := fmt.Sprintf(format, a)
-	zapLog.Debug(info, zap.Skip())
+func (l *RecordLog) Debug(a ...interface{}) {
+	sugar.Debug(a)
 }
 
 // Fatal shutdown if fail
-func (l *RecordLog) Fatal(v ...interface{}) {
-	log.Fatal(v)
+func (l *RecordLog) Fatal(a ...interface{}) {
+	sugar.Fatal(a)
 }
 
-// Info look some infomation
-func (l *RecordLog) Info(format string, a ...interface{}) {
-	info := fmt.Sprintf(format, a)
-	zapLog.Info(info, zap.Skip())
+// Info look some information
+func (l *RecordLog) Info(a ...interface{}) {
+	sugar.Info(a)
 }
 
 // Warn warn
-func (l *RecordLog) Warn(format string, a ...interface{}) {
-	warn := fmt.Sprintf(format, a)
-	zapLog.Warn(warn, zap.Skip())
+func (l *RecordLog) Warn(a ...interface{}) {
+	sugar.Warn(a)
 }
