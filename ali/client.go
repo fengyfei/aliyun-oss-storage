@@ -27,33 +27,22 @@
 *     Initial: 2017-08-01          Yusan Kurban
  */
 
-package main
+package ali
 
 import (
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
-
-	"aliyun-oss-storage/ali"
-	"aliyun-oss-storage/general"
-	"aliyun-oss-storage/router"
-	"aliyun-oss-storage/service/initorm"
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
-func startService() {
-	server := echo.New()
+var (
+	// AliClient is global client
+	AliClient *oss.Client
+	err       error
+)
 
-	server.Use(middleware.Recover())
-
-	server.HTTPErrorHandler = general.EchoRestfulErrorHandler
-	server.Validator = general.NewEchoValidator()
-
-	router.InitRouter(server)
-
-	server.Start(Conf.Address)
-}
-
-func init() {
-	readConfiguration()
-	initorm.InitCockroachPool(Conf.DbURL, Conf.PoolSize)
-	ali.Connection(Conf.EndPoint, Conf.AccessKeyID, Conf.AccessKeySecret)
+// Connection is get client from aliyun.
+func Connection(point, id, secret string) {
+	AliClient, err = oss.New(point, id, secret)
+	if err != nil {
+		panic(err)
+	}
 }
