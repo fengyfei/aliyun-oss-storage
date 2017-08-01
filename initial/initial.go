@@ -30,8 +30,8 @@
 package initial
 
 import (
-	"Winston/config"
-	"Winston/orm/cockroach"
+	"aliyun-oss-storage/config"
+	"aliyun-oss-storage/orm/cockroach"
 )
 
 var (

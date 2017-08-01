@@ -34,7 +34,7 @@ import (
 
 	"github.com/labstack/echo"
 
-	"Winston/log"
+	"aliyun-oss-storage/log"
 )
 
 var (

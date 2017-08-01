@@ -30,7 +30,7 @@
 package general
 
 import (
-	"Winston/general/errcode"
+	"aliyun-oss-storage/general/errcode"
 )
 
 // ErrorResp response error
