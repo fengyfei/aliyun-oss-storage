@@ -27,7 +27,7 @@
  *     Initial: 2017/08/01        Liu JiaChang
  */
 
-package config
+package main
 
 import (
 	"github.com/spf13/viper"
@@ -50,7 +50,7 @@ var (
 )
 
 // ReadConfiguration initial read config
-func ReadConfiguration() {
+func readConfiguration() {
 	viper.AddConfigPath("./")
 	viper.SetConfigName("config")
 
