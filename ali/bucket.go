@@ -24,7 +24,7 @@
 
 /*
 * Revision History
-*     Initial: 2017-08-01          Sun Anxiang
+*     Initial: 2017/08/01          Sun Anxiang
  */
 
 package ali

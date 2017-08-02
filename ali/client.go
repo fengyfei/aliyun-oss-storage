@@ -24,7 +24,7 @@
 
 /*
 * Revision History
-*     Initial: 2017-08-01          Yusan Kurban
+*     Initial: 2017/08/01          Yusan Kurban
  */
 
 package ali
