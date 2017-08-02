@@ -1,8 +1,12 @@
-hash: 469a5783247d820bd0ad1a1bceca0334f837789e9da21a34207ed213d4f9585e
-updated: 2017-08-01T16:06:00.26387692+08:00
+hash: 6dc77d0ca89e63e1cab50ff4c26ca4b27fde35cfe01549c07c6cd04dc77f9157
+updated: 2017-08-02T11:07:33.312765269+08:00
 imports:
 - name: github.com/aliyun/aliyun-oss-go-sdk
   version: 238969d88b7eabd7102466f4097dd776cb8bba34
+  subpackages:
+  - oss
+- name: github.com/boltdb/bolt
+  version: 2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8
 - name: github.com/dgrijalva/jwt-go
   version: d2709f9f1f31ebcda9651b03077758c1f3a0018c
 - name: github.com/fsnotify/fsnotify
@@ -28,8 +32,6 @@ imports:
   version: 5174cc5c242a728b435ea2be8a2f7f998e15429b
   subpackages:
   - dialects/postgres
-- name: github.com/jinzhu/inflection
-  version: 1c35d901db3da928c72a72d8458480cc9ade058f
 - name: github.com/labstack/echo
   version: 935a60782cbbc55110e7bd4b33120e4567cbee43
   subpackages:
@@ -41,11 +43,6 @@ imports:
   - color
   - log
   - random
-- name: github.com/lib/pq
-  version: 8837942c3e09574accbc5f150e2c5e057189cace
-  subpackages:
-  - hstore
-  - oid
 - name: github.com/magiconair/properties
   version: 51463bfca2576e06c62a8504b5c0f06d61312647
 - name: github.com/mattn/go-colorable
