@@ -41,7 +41,7 @@ var (
 // GetBucket is to get the bucket of client.
 func GetBucket(bucketName string) {
 	Bucket = &oss.Bucket{
-		Client: 	*AliClient,
-		BucketName: bucketName,
+		Client:		*AliClient,
+		BucketName:	bucketName,
 	}
 }
