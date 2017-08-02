@@ -24,7 +24,7 @@
 
 /*
 * Revision History
-*     Initial: 2017-08-01          Sun Anxiang
+*     Initial: 2017-08-02          Sun Anxiang
  */
 
 package ali
@@ -32,25 +32,18 @@ package ali
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 
-	"aliyun-oss-storage/config"
 	"aliyun-oss-storage/log"
 )
 
-type OssClient struct {
-	Client	*oss.Client
+type OssBucket struct {
+	Bucket *oss.Bucket
 }
 
-// SetBucketACL is to set the authority of bucket with the config bucketName.
-func (this *OssClient) SetBucketACL(bucketACL oss.ACLType) error {
-	err := this.Client.SetBucketACL(config.Conf.BucketName, bucketACL)
+func (this *OssBucket) SetObjectACL(objectKey string, objectACL oss.ACLType) error {
+	err := this.Bucket.SetObjectACL(objectKey, objectACL)
 	if err != nil {
-		log.Logger.Error("[ERROR]", err)
+		log.Logger.Error("ERROR", err)
 	}
 
 	return err
-}
-
-// GetBucketController is to get the live object of oss.Bucket.
-func (this *OssClient) GetBucketController() (*oss.Bucket, error) {
-	return this.Client.Bucket(config.Conf.BucketName)
 }
