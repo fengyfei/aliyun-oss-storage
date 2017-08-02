@@ -31,26 +31,17 @@ package ali
 
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-
-	"aliyun-oss-storage/config"
-	"aliyun-oss-storage/log"
 )
 
-type OssClient struct {
-	Client	*oss.Client
-}
+var (
+	// Bucket is global bucket
+	Bucket	*oss.Bucket
+)
 
-// SetBucketACL is to set the authority of bucket with the config bucketName.
-func (this *OssClient) SetBucketACL(bucketACL oss.ACLType) error {
-	err := this.Client.SetBucketACL(config.Conf.BucketName, bucketACL)
-	if err != nil {
-		log.Logger.Error("[ERROR]", err)
+// GetBucket is to get the bucket of client.
+func GetBucket(bucketName string) {
+	Bucket = &oss.Bucket{
+		Client:		*AliClient,
+		BucketName:	bucketName,
 	}
-
-	return err
-}
-
-// GetBucketController is to get the live object of oss.Bucket.
-func (this *OssClient) GetBucketController() (*oss.Bucket, error) {
-	return this.Client.Bucket(config.Conf.BucketName)
 }
