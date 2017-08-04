@@ -36,12 +36,13 @@ import (
 var (
 	// Bucket is global bucket
 	Bucket	*oss.Bucket
+	Err		error
 )
 
 // GetBucket is to get the bucket of client.
 func GetBucket(bucketName string) {
-	Bucket = &oss.Bucket{
-		Client:		*AliClient,
-		BucketName:	bucketName,
+	Bucket, err = AliClient.Bucket(bucketName)
+	if err != nil {
+		panic(err)
 	}
 }
