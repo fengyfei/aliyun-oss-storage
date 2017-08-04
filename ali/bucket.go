@@ -35,8 +35,8 @@ import (
 
 var (
 	// Bucket is global bucket
-	Bucket	*oss.Bucket
-	Err		error
+	Bucket  *oss.Bucket
+	Err     error
 )
 
 // GetBucket is to get the bucket of client.
