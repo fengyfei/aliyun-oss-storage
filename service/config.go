@@ -41,6 +41,7 @@ type workServerConfig struct {
 	AccessKeyID     string
 	AccessKeySecret string
 	BucketName      string
+	BoltPath        string
 	ProjectList     map[string]string
 }
 
@@ -66,6 +67,7 @@ func readConfiguration() {
 		AccessKeyID:     viper.GetString("ali.access.id"),
 		AccessKeySecret: viper.GetString("ali.access.secret"),
 		BucketName:      viper.GetString("ali.bucket"),
+		BoltPath:        viper.GetString("bolt.path"),
 		ProjectList:     viper.GetStringMapString("project"),
 	}
 }

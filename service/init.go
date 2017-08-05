@@ -36,6 +36,7 @@ import (
 	"aliyun-oss-storage/ali"
 	"aliyun-oss-storage/general"
 	"aliyun-oss-storage/router"
+	"aliyun-oss-storage/bolt"
 )
 
 func startService() {
@@ -53,6 +54,8 @@ func startService() {
 
 func init() {
 	readConfiguration()
+
+	bolt.InitBolt(conf.BoltPath)
 
 	ali.Connection(conf.EndPoint, conf.AccessKeyID, conf.AccessKeySecret)
 	ali.GetBucket(conf.BucketName)
