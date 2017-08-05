@@ -39,6 +39,8 @@ import (
 
 	"aliyun-oss-storage/log"
 	"aliyun-oss-storage/model"
+	"aliyun-oss-storage/bolt"
+	"aliyun-oss-storage/general/errcode"
 )
 
 func UploadFileHandler(c echo.Context) error {
@@ -46,9 +48,11 @@ func UploadFileHandler(c echo.Context) error {
 
 	file, err := c.FormFile("file")
 	if err != nil {
-		log.Logger.Error("UploadFileHandler FormFile %v:", err)
+		log.Logger.Error("UploadFileHandler FormFile err: %v", err)
 		return err
 	}
+
+	hash := c.FormValue("hash")
 
 	suffixs := strings.Split(file.Filename, ".")
 	if len(suffixs) <= 1 {
@@ -57,22 +61,43 @@ func UploadFileHandler(c echo.Context) error {
 		kind = "." + suffixs[len(suffixs)-1]
 	}
 
-	project := c.FormValue("project")
+	var fileinfo bolt.FileInfo
+	err = c.Bind(fileinfo)
+	if err != nil {
+		log.Logger.Error("UploadFileHandler Bind err: %v:", err)
+		return err
+	}
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	fileName := project + "/" + timestamp + kind
+	fileName := fileinfo.Project + "/" + timestamp + kind
 
 	src, err := file.Open()
 	if err != nil {
-		log.Logger.Error("UploadFileHandler Open %v:", err)
+		log.Logger.Error("UploadFileHandler Open err: %v", err)
 		return err
 	}
 	defer src.Close()
 
+	err, _ = bolt.FileInfoService.GetInfo(&hash)
+	if err == bolt.ErrNotFound {
+		goto Create
+	} else {
+		goto Finish
+	}
+Create:
+	err = bolt.FileInfoService.CreateInfo(&hash, &fileinfo)
+	if err != nil {
+		log.Logger.Error("UserDataService CreateOne err: %v:", err)
+		return err
+	}
+
 	err = model.FileService.UploadFile(fileName, &src)
 	if err != nil {
-		log.Logger.Error("FileService UploadFile %v:", err)
+		log.Logger.Error("FileService UploadFile err: %v", err)
 		return err
 	}
 
 	return c.JSON(http.StatusOK, fileName)
+
+Finish:
+	return c.JSON(errcode.ErrInvalidParams, nil)
 }

@@ -37,11 +37,23 @@ import (
 
 var BoltDb *bolt.DB
 
-func InitBolt(path string) {
+func InitBolt(path string) error {
 	db, err := bolt.Open(path, 0600, &bolt.Options{Timeout: time.Second})
 	if err != nil {
 		panic(err)
 	}
 
 	BoltDb = db
+
+	tx, err := BoltDb.Begin(true)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if _, err = tx.CreateBucketIfNotExists([]byte("userdata")); err != nil {
+		return err
+	}
+
+	return tx.Commit()
 }
