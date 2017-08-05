@@ -31,22 +31,23 @@ package main
 
 import (
 	"github.com/spf13/viper"
+	"CMS/log"
 )
 
 type workServerConfig struct {
 	Address         string
 	IsDebug         bool
-	DbURL           string
-	PoolSize        int
 	EndPoint        string
 	AccessKeyID     string
 	AccessKeySecret string
 	BucketName      string
+	ProjectList     map[string]string
 }
 
 var (
 	// Conf is a config
-	Conf *workServerConfig
+	conf        *workServerConfig
+	projList    map[string]string
 )
 
 // ReadConfiguration initial read config
@@ -58,14 +59,23 @@ func readConfiguration() {
 		panic(err)
 	}
 
-	Conf = &workServerConfig{
+	conf = &workServerConfig{
 		Address:         viper.GetString("server.address"),
 		IsDebug:         viper.GetBool("server.debug"),
-		DbURL:           viper.GetString("cockroach.url"),
-		PoolSize:        viper.GetInt("cockroach.size"),
 		EndPoint:        viper.GetString("ali.endpoint"),
 		AccessKeyID:     viper.GetString("ali.access.id"),
 		AccessKeySecret: viper.GetString("ali.access.secret"),
 		BucketName:      viper.GetString("ali.bucket"),
+		ProjectList:     viper.GetStringMapString("project"),
 	}
+}
+
+func readProjectList() {
+	if err := viper.ReadInConfig(); err != nil {
+		log.Logger.Error("Read config error:", err)
+
+		return
+	}
+
+	projList = viper.GetStringMapString("project")
 }

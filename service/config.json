@@ -1,12 +1,14 @@
 {
-  "server": {
-    "address": ":7100",
-    "debug": true
-  },
-  "cockroach": {
-    "url": "postgresql://core_acc:J8Mct1UxL5@10.0.0.253:26257/core?sslmode=disable",
-    "size": 50
+	"server": {
+		"address": ":7100",
+		"debug": true
 	},
+
+	"cockroach": {
+		"url": "postgresql://core_acc:J8Mct1UxL5@10.0.0.253:26257/core?sslmode=disable",
+		"size": 50
+	},
+
 	"ali": {
 		"endpoint": "oss-cn-beijing.aliyuncs.com",
 		"bucket": "yang-test-oss",
@@ -14,5 +16,13 @@
 			"id": "LTAIm0O4R0e2apIW",
 			"secret": "mCpga09GoGWp1JSczakO3YfaYlACpa"
 		}
-	}
+	},
+
+	"project": [
+		{
+			"proj1": "securitykey1"
+		},{
+			"proj2": "securitykey2"
+		}
+	]
 }

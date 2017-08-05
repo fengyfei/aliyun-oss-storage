@@ -48,12 +48,12 @@ func startService() {
 
 	router.InitRouter(server)
 
-	server.Start(Conf.Address)
+	server.Start(conf.Address)
 }
 
 func init() {
 	readConfiguration()
 
-	ali.Connection(Conf.EndPoint, Conf.AccessKeyID, Conf.AccessKeySecret)
-	ali.GetBucket(Conf.BucketName)
+	ali.Connection(conf.EndPoint, conf.AccessKeyID, conf.AccessKeySecret)
+	ali.GetBucket(conf.BucketName)
 }
