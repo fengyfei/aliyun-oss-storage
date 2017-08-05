@@ -25,11 +25,16 @@
 /*
 * Revision History
 *     Initial: 2017/08/02          Yusan Kurban
+*     Modify : 2017/08/05          Yang Chenglong
  */
 
 package model
 
 import (
+	"bufio"
+
+	"mime/multipart"
+
 	"aliyun-oss-storage/ali"
 )
 
@@ -57,4 +62,13 @@ func (fs *FileProviderService) GetFile(objectKey, project string) (string, error
 	}
 
 	return LocalPath + path, nil
+}
+
+func (fs *FileProviderService) UploadFile(objectKey string, file *multipart.File) error {
+	err := ali.Bucket.PutObject(objectKey, bufio.NewReader(*file))
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
