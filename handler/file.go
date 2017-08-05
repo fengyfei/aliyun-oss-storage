@@ -42,6 +42,8 @@ import (
 )
 
 func UploadFileHandler(c echo.Context) error {
+	var kind string
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		log.Logger.Error("UploadFileHandler FormFile %v:", err)
@@ -49,11 +51,15 @@ func UploadFileHandler(c echo.Context) error {
 	}
 
 	suffixs := strings.Split(file.Filename, ".")
-	suffix := suffixs[len(suffixs)-1]
+	if len(suffixs) <= 1 {
+		kind = ""
+	} else {
+		kind = "." + suffixs[len(suffixs)-1]
+	}
 
 	project := c.FormValue("project")
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	fileName := project + "/" + timestamp + "." + suffix
+	fileName := project + "/" + timestamp + kind
 
 	src, err := file.Open()
 	if err != nil {
