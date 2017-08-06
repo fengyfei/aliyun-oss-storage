@@ -98,23 +98,22 @@ func ParseJWT(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func decodingJWT(token, secret, name string) error {
-	var conf jwtConfig
-
-	conf.keyFunc = func(t *jwt.Token) (interface{}, error) {
-		if t.Method.Alg() != algorithm {
-			return nil, fmt.Errorf("Unexpected algorithm method=%v", t.Header["alg"])
+func decodingJWT(tokenString, secret, name string) error {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if token.Method.Alg() != algorithm {
+			return nil, fmt.Errorf("Unexpected algorithm method=%v", token.Header["alg"])
 		}
-		return secret, nil
+
+		return []byte(secret), nil
+	})
+
+	if err != nil {
+		return err
 	}
 
-	tt := new(jwt.Token)
-	tt, err := jwt.Parse(token, conf.keyFunc)
-	if err == nil && tt.Valid {
-		if claims, ok := tt.Claims.(jwt.MapClaims); ok {
-			if claims[ProName].(string) == name && time.Now().Unix()-claims[reqTime].(int64) < stand {
-				return nil
-			}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		if claims[ProName].(string) == name && float64(time.Now().Unix())-claims[reqTime].(float64) < stand {
+			return nil
 		}
 	}
 
@@ -143,5 +142,26 @@ func projectFromHeader(project string) jwtExtra {
 			return pro, nil
 		}
 		return "", ErrInvalidJWT
+	}
+}
+
+// GenerateJWT return jwt and nil if success.
+func GenerateJWT(project, secret string) {
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	claims := token.Claims.(jwt.MapClaims)
+	claims[ProName] = project
+	claims[reqTime] = time.Now().Unix()
+
+	t, err := token.SignedString([]byte(secret))
+	if err != nil {
+		log.Logger.Error("generate jwt failed with error:", err)
+	}
+
+	log.Logger.Debug("i got token now:", t)
+
+	err = decodingJWT(t, secret, project)
+	if err != nil {
+		log.Logger.Error("error", err)
 	}
 }

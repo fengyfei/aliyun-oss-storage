@@ -31,7 +31,8 @@ package main
 
 import (
 	"github.com/spf13/viper"
-	"CMS/log"
+
+	"aliyun-oss-storage/log"
 )
 
 type workServerConfig struct {
