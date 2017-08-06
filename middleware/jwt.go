@@ -94,7 +94,7 @@ func ParseJWT(next echo.HandlerFunc) echo.HandlerFunc {
 			return err
 		}
 
-		err = decodingJWT(token, secret)
+		err = decodingJWT(token, secret, name)
 		if err != nil {
 			log.Logger.Error("Parser jwt crash with:", err)
 			return err
@@ -106,7 +106,7 @@ func ParseJWT(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func decodingJWT(token, secret string) error {
+func decodingJWT(token, secret, name string) error {
 	var conf jwtConfig
 
 	conf.keyFunc = func(t *jwt.Token) (interface{}, error) {
@@ -119,7 +119,11 @@ func decodingJWT(token, secret string) error {
 	tt := new(jwt.Token)
 	tt, err := jwt.Parse(token, conf.keyFunc)
 	if err == nil && tt.Valid {
-		return nil
+		if claims, ok := tt.Claims.(jwt.MapClaims); ok {
+			if claims[proName] == name {
+				return nil
+			}
+		}
 	}
 
 	return ErrUnauthorized
