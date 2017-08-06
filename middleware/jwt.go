@@ -31,45 +31,44 @@ package middleware
 
 import (
 	"errors"
-
-	"github.com/labstack/echo"
-	jwt "github.com/dgrijalva/jwt-go"
-
-	"aliyun-oss-storage/log"
 	"fmt"
 	"time"
+
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/labstack/echo"
+
+	"aliyun-oss-storage/log"
 )
 
 const (
-	reqTime = "requesttime"
-	proName = "project"
-	header = "authorization"
-	schema = "bearer"
-	stand   = 5
+	reqTime   = "requesttime"
+	proName   = "project"
+	header    = "authorization"
+	schema    = "bearer"
+	stand     = 5
 	algorithm = "HS256"
 )
 
 type (
 	tokenHeader struct {
-	Alg 	string
-	Typ 	string
-}
+		Alg string
+		Typ string
+	}
 	payload struct {
-	Project 	string		`json:"project"`
-	RequestTime	int64		`json:"requesttime"`
-}
+		Project     string `json:"project"`
+		RequestTime int64  `json:"requesttime"`
+	}
 	jwtExtra func(echo.Context) (string, error)
 
 	jwtConfig struct {
-		keyFunc 	jwt.Keyfunc
+		keyFunc jwt.Keyfunc
 	}
-
 )
 
 var (
 	ErrUnauthorized = errors.New("Authorization failed")
-	ErrInvalidJWT	= errors.New("Missing or invalid jwt header	")
-	ErrNotFound		= errors.New("Project information not found")
+	ErrInvalidJWT   = errors.New("Missing or invalid jwt header	")
+	ErrNotFound     = errors.New("Project information not found")
 )
 
 // CheckJWT check project token and if it timeout .
@@ -121,7 +120,7 @@ func decodingJWT(token, secret, name string) error {
 	tt, err := jwt.Parse(token, conf.keyFunc)
 	if err == nil && tt.Valid {
 		if claims, ok := tt.Claims.(jwt.MapClaims); ok {
-			if claims[proName].(string) == name && time.Now().Unix() - claims[reqTime].(int64) < stand {
+			if claims[proName].(string) == name && time.Now().Unix()-claims[reqTime].(int64) < stand {
 				return nil
 			}
 		}
@@ -134,20 +133,19 @@ func getSecret(project string) string {
 	return project
 }
 
-
 func jwtFromHeader(header, authSchema string) jwtExtra {
 	return func(c echo.Context) (string, error) {
 		auth := c.Request().Header.Get(header)
 		l := len(authSchema)
-		if len(auth) > l + 1 && auth[:l] == authSchema {
-			return auth[l + 1:], nil
+		if len(auth) > l+1 && auth[:l] == authSchema {
+			return auth[l+1:], nil
 		}
 		return "", ErrInvalidJWT
 	}
 }
 
 func projectFromHeader(project string) jwtExtra {
-	return func (c echo.Context) (string, error) {
+	return func(c echo.Context) (string, error) {
 		pro := c.Request().Header.Get(project)
 		if len(pro) > 3 {
 			return pro, nil
