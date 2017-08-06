@@ -32,16 +32,16 @@ package handler
 import (
 	"net/http"
 	"strconv"
-	"time"
 	"strings"
+	"time"
 
 	"github.com/labstack/echo"
 
-	"aliyun-oss-storage/log"
-	"aliyun-oss-storage/model"
 	"aliyun-oss-storage/bolt"
 	"aliyun-oss-storage/general/errcode"
+	"aliyun-oss-storage/log"
 	"aliyun-oss-storage/middleware"
+	"aliyun-oss-storage/model"
 )
 
 func UploadFileHandler(c echo.Context) error {
@@ -73,7 +73,7 @@ func UploadFileHandler(c echo.Context) error {
 	}
 	defer src.Close()
 
-	err, _ = bolt.FileInfoService.GetInfo(&hash)
+	_, err = bolt.FileInfoService.GetInfo(&hash)
 	if err == bolt.ErrNotFound {
 		goto Create
 	} else {

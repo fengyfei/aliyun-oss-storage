@@ -31,8 +31,9 @@ package bolt
 
 import (
 	"encoding/json"
-    "aliyun-oss-storage/log"
 	"errors"
+
+	"aliyun-oss-storage/log"
 )
 
 var ErrNotFound = errors.New("Database Not Found")
@@ -64,23 +65,23 @@ func (asp *FileInfoServiceProvider) CreateInfo(hash *string, project *string) er
 	return tx.Commit()
 }
 
-func (asp *FileInfoServiceProvider) GetInfo(hash *string) (error, string) {
+func (asp *FileInfoServiceProvider) GetInfo(hash *string) (string, error) {
 	var info string
 
 	tx, err := BoltDb.Begin(false)
 	if err != nil {
 		log.Logger.Error("[get] begin txn error: %v", err)
-		return err, info
+		return info, err
 	}
 	defer tx.Rollback()
 
 	if v := tx.Bucket([]byte("userdata")).Get([]byte(*hash)); v == nil {
 		log.Logger.Debug("don't have record")
-		return ErrNotFound, info
+		return info, ErrNotFound
 	} else if err := json.Unmarshal(v, &info); err != nil {
 		log.Logger.Error("unmarshal error: %v", err)
-		return err, info
+		return info, err
 	}
 
-	return err, info
+	return info, err
 }
