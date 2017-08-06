@@ -37,6 +37,7 @@ import (
 
 	"aliyun-oss-storage/log"
 	"fmt"
+	"time"
 )
 
 const (
@@ -120,7 +121,7 @@ func decodingJWT(token, secret, name string) error {
 	tt, err := jwt.Parse(token, conf.keyFunc)
 	if err == nil && tt.Valid {
 		if claims, ok := tt.Claims.(jwt.MapClaims); ok {
-			if claims[proName] == name {
+			if claims[proName].(string) == name && time.Now().Unix() - claims[reqTime].(int64) < stand {
 				return nil
 			}
 		}
@@ -133,20 +134,6 @@ func getSecret(project string) string {
 	return project
 }
 
-func generateJWT(key, project string, req int64) (string, error) {
-	token := jwt.New(jwt.SigningMethodHS256)
-
-	claims := token.Claims.(jwt.MapClaims)
-	claims[proName] = project
-	claims[reqTime] = req
-
-	t, err := token.SignedString([]byte(key))
-	if err != nil {
-		return "", err
-	}
-
-	return t, nil
-}
 
 func jwtFromHeader(header, authSchema string) jwtExtra {
 	return func(c echo.Context) (string, error) {
