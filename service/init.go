@@ -59,7 +59,7 @@ func init() {
 
 	bolt.InitBolt(conf.BoltPath)
 	bolt.UseProjectList(projectList)
-	log.Logger.Debug("list:", projectList)
+
 	handler.InitReadConf(&projectList, readProjectList)
 
 	ali.Connection(conf.EndPoint, conf.AccessKeyID, conf.AccessKeySecret)
