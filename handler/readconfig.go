@@ -24,12 +24,52 @@
 
 /*
  * Revision History:
- *     Initial: 2017/08/05        Liu JiaChang
+ *     Initial: 2017/08/06        Liu JiaChang
  */
 
-package general
+package handler
 
-const (
-	BoltProjectList = "ProjectList"
-	BoltUserData    = "UserData"
+import (
+	"net/http"
+
+	"github.com/labstack/echo"
+
+	"aliyun-oss-storage/bolt"
+	"aliyun-oss-storage/log"
 )
+
+var (
+	projectList *map[string]string
+	readConf    func() error
+)
+
+func InitReadConf(projlist *map[string]string, f func() error) {
+	projectList = projlist
+	readConf = f
+}
+
+func UpdateConf(c echo.Context) error {
+	var err error
+
+	if err = readConf(); err != nil {
+		log.Logger.Error("Read config error:", err)
+
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	log.Logger.Debug("Project list....:", *projectList)
+
+	if err = bolt.UseProjectList(*projectList); err != nil {
+		log.Logger.Error("Using project list error:", err)
+
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, nil)
+}
+
+func ReadBoltDb(c echo.Context) error {
+	projList := bolt.GetProjectList()
+
+	return c.JSON(http.StatusOK, projList)
+}

@@ -53,13 +53,60 @@ func InitBolt(path string) error {
 	}
 	defer tx.Rollback()
 
-	if _, err = tx.CreateBucketIfNotExists([]byte(general.BoltBucketName)); err != nil {
+	if _, err = tx.CreateBucketIfNotExists([]byte(general.BoltProjectList)); err != nil {
 		return err
 	}
 
-	if _, err = tx.CreateBucketIfNotExists([]byte(general.UserData)); err != nil {
+	if _, err = tx.CreateBucketIfNotExists([]byte(general.BoltUserData)); err != nil {
 		return err
 	}
 
 	return tx.Commit()
+}
+
+func UseProjectList(plist map[string]string) error {
+	return BoltDb.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte(general.BoltProjectList))
+		cursor := bucket.Cursor()
+
+		for key, value := cursor.First(); key != nil; key, value = cursor.Next() {
+			if secure, ok := plist[string(key)]; ok {
+				if secure != string(value) {
+					if err := bucket.Put(key, []byte(secure)); err != nil {
+						return err
+					}
+				}
+				delete(plist, string(key))
+			} else {
+				if err := bucket.Delete([]byte(key)); err != nil {
+					return err
+				}
+			}
+		}
+
+		for name, secure := range plist {
+			if err := bucket.Put([]byte(name), []byte(secure)); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+}
+
+func GetProjectList() map[string]string {
+	projectList := make(map[string]string)
+
+	BoltDb.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte(general.BoltProjectList))
+		cursor := bucket.Cursor()
+
+		for key, value := cursor.First(); key != nil; key, value = cursor.Next() {
+			projectList[string(key)] = string(value)
+		}
+
+		return nil
+	})
+
+	return projectList
 }

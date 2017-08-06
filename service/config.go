@@ -43,13 +43,12 @@ type workServerConfig struct {
 	AccessKeySecret string
 	BucketName      string
 	BoltPath        string
-	ProjectList     map[string]string
 }
 
 var (
 	// Conf is a config
 	conf        *workServerConfig
-	projList    map[string]string
+	projectList map[string]string
 )
 
 // ReadConfiguration initial read config
@@ -69,16 +68,21 @@ func readConfiguration() {
 		AccessKeySecret: viper.GetString("ali.access.secret"),
 		BucketName:      viper.GetString("ali.bucket"),
 		BoltPath:        viper.GetString("bolt.path"),
-		ProjectList:     viper.GetStringMapString("project"),
 	}
+
+	projectList = viper.GetStringMapString("project")
 }
 
-func readProjectList() {
+func readProjectList() error {
 	if err := viper.ReadInConfig(); err != nil {
 		log.Logger.Error("Read config error:", err)
 
-		return
+		return err
 	}
 
-	projList = viper.GetStringMapString("project")
+	projectList = viper.GetStringMapString("project")
+
+	log.Logger.Debug("Project list:", projectList)
+
+	return nil
 }

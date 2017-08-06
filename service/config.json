@@ -17,11 +17,9 @@
 		}
 	},
 
-	"project": [
-		{
-			"proj1": "securitykey1"
-		},{
-			"proj2": "securitykey2"
-		}
-	]
+	"project": {
+		"proj1": "1111111",
+		"proj4": "2222222",
+		"proj3": "3333333"
+	}
 }
