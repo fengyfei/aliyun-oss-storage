@@ -33,6 +33,8 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
+
+	"aliyun-oss-storage/general"
 )
 
 var BoltDb *bolt.DB
@@ -51,7 +53,11 @@ func InitBolt(path string) error {
 	}
 	defer tx.Rollback()
 
-	if _, err = tx.CreateBucketIfNotExists([]byte("userdata")); err != nil {
+	if _, err = tx.CreateBucketIfNotExists([]byte(general.BoltBucketName)); err != nil {
+		return err
+	}
+
+	if _, err = tx.CreateBucketIfNotExists([]byte(general.UserData)); err != nil {
 		return err
 	}
 
