@@ -41,23 +41,15 @@ import (
 )
 
 const (
-	reqTime = "requesttime"
-	ProName = "project"
-	header = "authorization"
-	schema = "bearer"
-	stand   = 5
+	reqTime   = "requesttime"
+	ProName   = "project"
+	header    = "authorization"
+	schema    = "bearer"
+	stand     = 5
 	algorithm = "HS256"
 )
 
 type (
-	tokenHeader struct {
-		Alg string
-		Typ string
-	}
-	payload struct {
-		Project     string `json:"project"`
-		RequestTime int64  `json:"requesttime"`
-	}
 	jwtExtra func(echo.Context) (string, error)
 
 	jwtConfig struct {
@@ -71,7 +63,7 @@ var (
 	ErrNotFound     = errors.New("Project information not found")
 )
 
-// CheckJWT check project token and if it timeout .
+// ParseJWT CheckJWT check project token and if it timeout .
 func ParseJWT(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		pro := projectFromHeader(ProName)
@@ -120,7 +112,7 @@ func decodingJWT(token, secret, name string) error {
 	tt, err := jwt.Parse(token, conf.keyFunc)
 	if err == nil && tt.Valid {
 		if claims, ok := tt.Claims.(jwt.MapClaims); ok {
-			if claims[ProName].(string) == name && time.Now().Unix() - claims[reqTime].(int64) < stand {
+			if claims[ProName].(string) == name && time.Now().Unix()-claims[reqTime].(int64) < stand {
 				return nil
 			}
 		}
