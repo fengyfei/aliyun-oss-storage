@@ -30,8 +30,9 @@
 package router
 
 import (
-	"aliyun-oss-storage/handler"
 	"github.com/labstack/echo"
+
+	"aliyun-oss-storage/handler"
 )
 
 // InitRouter initial router
@@ -41,4 +42,7 @@ func InitRouter(e *echo.Echo) {
 	}
 
 	e.POST("/uploadfile", handler.UploadFileHandler)
+
+	e.GET("/update/project/list", handler.UpdateConf)
+	e.GET("/get/project/list", handler.ReadBoltDb)
 }

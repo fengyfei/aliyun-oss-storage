@@ -30,6 +30,6 @@
 package general
 
 const (
-	BoltBucketName  = "ProjectList"
-	UserData        = "UserData"
+	BoltProjectList = "ProjectList"
+	BoltUserData    = "UserData"
 )
