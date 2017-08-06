@@ -43,13 +43,7 @@ var (
 	FileInfoService *FileInfoServiceProvider = &FileInfoServiceProvider{}
 )
 
-type FileInfo struct {
-	FileName      string    `json:"filename"         form:"filename"        query:"filename"`
-	Project       string  	`json:"project"          form:"project"         query:"project"`
-	Secret        string    `json:"secret"           form:"secret"          query:"secret"`
-}
-
-func (asp *FileInfoServiceProvider) CreateInfo(hash *string, info *FileInfo) error {
+func (asp *FileInfoServiceProvider) CreateInfo(hash *string, project *string) error {
 	tx, err := BoltDb.Begin(true)
 	if err != nil {
 		log.Logger.Error("[create] begin txn error: %v", err)
@@ -59,7 +53,7 @@ func (asp *FileInfoServiceProvider) CreateInfo(hash *string, info *FileInfo) err
 
 	bucket := tx.Bucket([]byte("userdata"))
 
-	if ab, err := json.Marshal(info); err != nil {
+	if ab, err := json.Marshal(*project); err != nil {
 		log.Logger.Error("marshal error: %v", err)
 		return err
 	} else if err := bucket.Put([]byte(*hash), ab); err != nil {
@@ -70,8 +64,8 @@ func (asp *FileInfoServiceProvider) CreateInfo(hash *string, info *FileInfo) err
 	return tx.Commit()
 }
 
-func (asp *FileInfoServiceProvider) GetInfo(hash *string) (error, FileInfo) {
-	var info FileInfo
+func (asp *FileInfoServiceProvider) GetInfo(hash *string) (error, string) {
+	var info string
 
 	tx, err := BoltDb.Begin(false)
 	if err != nil {

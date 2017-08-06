@@ -41,6 +41,7 @@ import (
 	"aliyun-oss-storage/model"
 	"aliyun-oss-storage/bolt"
 	"aliyun-oss-storage/general/errcode"
+	"aliyun-oss-storage/middleware"
 )
 
 func UploadFileHandler(c echo.Context) error {
@@ -53,6 +54,7 @@ func UploadFileHandler(c echo.Context) error {
 	}
 
 	hash := c.FormValue("hash")
+	project := c.Get(middleware.ProName).(string)
 
 	suffixs := strings.Split(file.Filename, ".")
 	if len(suffixs) <= 1 {
@@ -61,14 +63,8 @@ func UploadFileHandler(c echo.Context) error {
 		kind = "." + suffixs[len(suffixs)-1]
 	}
 
-	var fileinfo bolt.FileInfo
-	err = c.Bind(fileinfo)
-	if err != nil {
-		log.Logger.Error("UploadFileHandler Bind err: %v:", err)
-		return err
-	}
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	fileName := fileinfo.Project + "/" + timestamp + kind
+	fileName := project + "/" + timestamp + kind
 
 	src, err := file.Open()
 	if err != nil {
@@ -84,7 +80,7 @@ func UploadFileHandler(c echo.Context) error {
 		goto Finish
 	}
 Create:
-	err = bolt.FileInfoService.CreateInfo(&hash, &fileinfo)
+	err = bolt.FileInfoService.CreateInfo(&hash, &fileName)
 	if err != nil {
 		log.Logger.Error("UserDataService CreateOne err: %v:", err)
 		return err

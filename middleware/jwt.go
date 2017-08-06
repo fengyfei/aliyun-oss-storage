@@ -41,11 +41,11 @@ import (
 )
 
 const (
-	reqTime   = "requesttime"
-	proName   = "project"
-	header    = "authorization"
-	schema    = "bearer"
-	stand     = 5
+	reqTime = "requesttime"
+	ProName = "project"
+	header = "authorization"
+	schema = "bearer"
+	stand   = 5
 	algorithm = "HS256"
 )
 
@@ -74,7 +74,7 @@ var (
 // CheckJWT check project token and if it timeout .
 func ParseJWT(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		pro := projectFromHeader(proName)
+		pro := projectFromHeader(ProName)
 		name, err := pro(c)
 		if err != nil {
 			log.Logger.Error("Query header crash with:", err)
@@ -100,7 +100,7 @@ func ParseJWT(next echo.HandlerFunc) echo.HandlerFunc {
 			return err
 		}
 
-		c.Set(proName, name)
+		c.Set(ProName, name)
 
 		return next(c)
 	}
@@ -120,7 +120,7 @@ func decodingJWT(token, secret, name string) error {
 	tt, err := jwt.Parse(token, conf.keyFunc)
 	if err == nil && tt.Valid {
 		if claims, ok := tt.Claims.(jwt.MapClaims); ok {
-			if claims[proName].(string) == name && time.Now().Unix()-claims[reqTime].(int64) < stand {
+			if claims[ProName].(string) == name && time.Now().Unix() - claims[reqTime].(int64) < stand {
 				return nil
 			}
 		}
