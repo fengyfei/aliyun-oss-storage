@@ -39,6 +39,7 @@ import (
 
 var BoltDb *bolt.DB
 
+// InitBolt 初始化 bolt 数据库
 func InitBolt(path string) error {
 	db, err := bolt.Open(path, 0600, &bolt.Options{Timeout: time.Second})
 	if err != nil {
@@ -64,6 +65,7 @@ func InitBolt(path string) error {
 	return tx.Commit()
 }
 
+// UseProjectList 用配置文件读取的 map 更新数据库
 func UseProjectList(plist map[string]string) error {
 	return BoltDb.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(general.BoltProjectList))
@@ -94,6 +96,7 @@ func UseProjectList(plist map[string]string) error {
 	})
 }
 
+// GetProjectList 从数据库获取 map
 func GetProjectList() map[string]string {
 	projectList := make(map[string]string)
 
@@ -109,4 +112,17 @@ func GetProjectList() map[string]string {
 	})
 
 	return projectList
+}
+
+func GetProjectSecure(pname string) string {
+	var secure []byte
+
+	BoltDb.Update(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte(general.BoltProjectList))
+		secure = bucket.Get([]byte(pname))
+
+		return nil
+	})
+
+	return string(secure)
 }

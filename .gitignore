@@ -3,4 +3,4 @@
 .idea/vcs.xml
 .vscode
 service/service
-.db
+*.db
