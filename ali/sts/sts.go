@@ -30,10 +30,13 @@
 package ali
 
 import (
-	"net/url"
 	"crypto/hmac"
 	"crypto/sha1"
+	"crypto/tls"
 	"encoding/base64"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/satori/go.uuid"
@@ -41,6 +44,7 @@ import (
 	"aliyun-oss-storage/general"
 )
 
+// 获取带有签名请求的URL
 func GenerateSignatureUrl() (string, error) {
 	// 构造URL
 	assumeUrl := "SignatureVersion=1.0"
@@ -77,4 +81,22 @@ func GenerateSignatureUrl() (string, error) {
 	assumeUrl = general.StsEndpoint + assumeUrl + "&Signature=" + url.QueryEscape(strResult)
 
 	return assumeUrl, nil
+}
+
+// 获得STS认证
+func GetStsResponse(url string) ([]byte, error) {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+
+	resp, err := client.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	return body, err
 }

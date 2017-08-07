@@ -45,4 +45,6 @@ func InitRouter(e *echo.Echo) {
 
 	e.GET("/update/project/list", handler.UpdateConf)
 	e.GET("/get/project/list", handler.ReadBoltDb)
+
+	e.GET("/sts/cert", handler.GetStsCredential)
 }
