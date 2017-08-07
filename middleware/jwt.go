@@ -52,10 +52,6 @@ const (
 
 type (
 	jwtExtra func(echo.Context) (string, error)
-
-	jwtConfig struct {
-		keyFunc jwt.Keyfunc
-	}
 )
 
 var (
