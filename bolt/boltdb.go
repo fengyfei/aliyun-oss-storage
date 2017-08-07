@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2017 SmartestEE Co.,ltd..
+ * Copyright (c) 2017 SmartestEE Co.,Ltd..
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -114,12 +114,12 @@ func GetProjectList() map[string]string {
 	return projectList
 }
 
-func GetProjectSecure(pname string) (string, error) {
+func GetProjectSecure(projname string) (string, error) {
 	var secure []byte
 
 	err := BoltDb.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(general.BoltProjectList))
-		secure = bucket.Get([]byte(pname))
+		secure = bucket.Get([]byte(projname))
 
 		return nil
 	})
