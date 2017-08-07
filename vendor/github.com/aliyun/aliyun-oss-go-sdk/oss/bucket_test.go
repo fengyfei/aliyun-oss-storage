@@ -197,6 +197,243 @@ func (s *OssBucketSuite) TestPutObject(c *C) {
 	c.Assert(err, IsNil)
 }
 
+func (s *OssBucketSuite) TestSignURL(c *C) {
+	objectName := objectNamePrefix + randStr(5)
+	objectValue := randStr(20)
+
+	filePath := randLowStr(10)
+	content := "复写object"
+	createFile(filePath, content, c)
+
+	notExistfilePath := randLowStr(10)
+	os.Remove(notExistfilePath)
+
+	// sign url for put
+	str, err := s.bucket.SignURL(objectName, HTTPPut, 60)
+	c.Assert(err, IsNil)
+	c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+
+	// error put object with url
+	err = s.bucket.PutObjectWithURL(str, strings.NewReader(objectValue), ContentType("image/tiff"))
+	c.Assert(err, NotNil)
+	c.Assert(err.(ServiceError).Code, Equals, "SignatureDoesNotMatch")
+
+	err = s.bucket.PutObjectFromFileWithURL(str, filePath, ContentType("image/tiff"))
+	c.Assert(err, NotNil)
+	c.Assert(err.(ServiceError).Code, Equals, "SignatureDoesNotMatch")
+
+	// put object with url
+	err = s.bucket.PutObjectWithURL(str, strings.NewReader(objectValue))
+	c.Assert(err, IsNil)
+
+	acl, err := s.bucket.GetObjectACL(objectName)
+	c.Assert(err, IsNil)
+	c.Assert(acl.ACL, Equals, "default")
+
+	// get object meta
+	meta, err := s.bucket.GetObjectDetailedMeta(objectName)
+	c.Assert(err, IsNil)
+	c.Assert(meta.Get(HTTPHeaderContentType), Equals, "application/octet-stream")
+	c.Assert(meta.Get("X-Oss-Meta-Myprop"), Equals, "")
+
+	// sign url for get object
+	str, err = s.bucket.SignURL(objectName, HTTPGet, 60)
+	c.Assert(err, IsNil)
+	c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+
+	// get object with url
+	body, err := s.bucket.GetObjectWithURL(str)
+	c.Assert(err, IsNil)
+	str, err = readBody(body)
+	c.Assert(err, IsNil)
+	c.Assert(str, Equals, objectValue)
+
+	// sign url for put with options
+	options := []Option{
+		ObjectACL(ACLPublicRead),
+		Meta("myprop", "mypropval"),
+		ContentType("image/tiff"),
+		ResponseContentEncoding("deflate"),
+	}
+	str, err = s.bucket.SignURL(objectName, HTTPPut, 60, options...)
+	c.Assert(err, IsNil)
+	c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+
+	// put object with url from file
+	// without option, error
+	err = s.bucket.PutObjectWithURL(str, strings.NewReader(objectValue))
+	c.Assert(err, NotNil)
+	c.Assert(err.(ServiceError).Code, Equals, "SignatureDoesNotMatch")
+
+	err = s.bucket.PutObjectFromFileWithURL(str, filePath)
+	c.Assert(err, NotNil)
+	c.Assert(err.(ServiceError).Code, Equals, "SignatureDoesNotMatch")
+
+	// with option, error file
+	err = s.bucket.PutObjectFromFileWithURL(str, notExistfilePath, options...)
+	c.Assert(err, NotNil)
+
+	// with option
+	err = s.bucket.PutObjectFromFileWithURL(str, filePath, options...)
+	c.Assert(err, IsNil)
+
+	// get object meta
+	meta, err = s.bucket.GetObjectDetailedMeta(objectName)
+	c.Assert(err, IsNil)
+	c.Assert(meta.Get("X-Oss-Meta-Myprop"), Equals, "mypropval")
+	c.Assert(meta.Get(HTTPHeaderContentType), Equals, "image/tiff")
+
+	acl, err = s.bucket.GetObjectACL(objectName)
+	c.Assert(err, IsNil)
+	c.Assert(acl.ACL, Equals, string(ACLPublicRead))
+
+	// sign url for get object
+	str, err = s.bucket.SignURL(objectName, HTTPGet, 60)
+	c.Assert(err, IsNil)
+
+	// get object to file with url
+	newFile := randStr(10)
+	err = s.bucket.GetObjectToFileWithURL(str, newFile)
+	c.Assert(err, IsNil)
+	eq, err := compareFiles(filePath, newFile)
+	c.Assert(err, IsNil)
+	c.Assert(eq, Equals, true)
+	os.Remove(newFile)
+
+	// get object to file error
+	err = s.bucket.GetObjectToFileWithURL(str, newFile, options...)
+	c.Assert(err, NotNil)
+	c.Assert(err.(ServiceError).Code, Equals, "SignatureDoesNotMatch")
+	_, err = os.Stat(newFile)
+	c.Assert(err, NotNil)
+
+	// get object error
+	body, err = s.bucket.GetObjectWithURL(str, options...)
+	c.Assert(err, NotNil)
+	c.Assert(err.(ServiceError).Code, Equals, "SignatureDoesNotMatch")
+	c.Assert(body, IsNil)
+
+	// sign url for get object with options
+	options = []Option{
+		Expires(futureDate),
+		ObjectACL(ACLPublicRead),
+		Meta("myprop", "mypropval"),
+		ContentType("image/tiff"),
+		ResponseContentEncoding("deflate"),
+	}
+	str, err = s.bucket.SignURL(objectName, HTTPGet, 60, options...)
+	c.Assert(err, IsNil)
+
+	// get object to file with url and options
+	err = s.bucket.GetObjectToFileWithURL(str, newFile, options...)
+	c.Assert(err, IsNil)
+	eq, err = compareFiles(filePath, newFile)
+	c.Assert(err, IsNil)
+	c.Assert(eq, Equals, true)
+	os.Remove(newFile)
+
+	// get object to file error
+	err = s.bucket.GetObjectToFileWithURL(str, newFile)
+	c.Assert(err, NotNil)
+	c.Assert(err.(ServiceError).Code, Equals, "SignatureDoesNotMatch")
+	_, err = os.Stat(newFile)
+	c.Assert(err, NotNil)
+
+	// get object error
+	body, err = s.bucket.GetObjectWithURL(str)
+	c.Assert(err, NotNil)
+	c.Assert(err.(ServiceError).Code, Equals, "SignatureDoesNotMatch")
+	c.Assert(body, IsNil)
+
+	os.Remove(filePath)
+	os.Remove(newFile)
+
+	// sign url error
+	str, err = s.bucket.SignURL(objectName, HTTPGet, -1)
+	c.Assert(err, NotNil)
+
+	err = s.bucket.DeleteObject(objectName)
+	c.Assert(err, IsNil)
+
+	// invalid url parse
+	str = randStr(20)
+
+	err = s.bucket.PutObjectWithURL(str, strings.NewReader(objectValue))
+	c.Assert(err, NotNil)
+
+	err = s.bucket.GetObjectToFileWithURL(str, newFile)
+	c.Assert(err, NotNil)
+}
+
+func (s *OssBucketSuite) TestSignURLWithEscapedKey(c *C) {
+	// key with '/'
+	objectName := "zyimg/86/e8/653b5dc97bb0022051a84c632bc4"
+	objectValue := "弃我去者，昨日之日不可留；乱我心者，今日之日多烦忧。长风万里送秋雁，对此可以酣高楼。蓬莱文章建安骨，中间小谢又清发。" +
+		"俱怀逸兴壮思飞，欲上青天揽明月。抽刀断水水更流，举杯销愁愁更愁。人生在世不称意，明朝散发弄扁舟。"
+
+	// sign url for put
+	str, err := s.bucket.SignURL(objectName, HTTPPut, 60)
+	c.Assert(err, IsNil)
+	c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+
+	// put object with url
+	err = s.bucket.PutObjectWithURL(str, strings.NewReader(objectValue))
+	c.Assert(err, IsNil)
+
+	// sign url for get object
+	str, err = s.bucket.SignURL(objectName, HTTPGet, 60)
+	c.Assert(err, IsNil)
+	c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+
+	// get object with url
+	body, err := s.bucket.GetObjectWithURL(str)
+	c.Assert(err, IsNil)
+	str, err = readBody(body)
+	c.Assert(err, IsNil)
+	c.Assert(str, Equals, objectValue)
+
+	// key with Chinese chars
+	objectName = "风吹柳花满店香，吴姬压酒劝客尝。金陵子弟来相送，欲行不行各尽觞。请君试问东流水，别意与之谁短长。"
+
+	// sign url for put
+	str, err = s.bucket.SignURL(objectName, HTTPPut, 60)
+	c.Assert(err, IsNil)
+	c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+
+	// put object with url
+	err = s.bucket.PutObjectWithURL(str, strings.NewReader(objectValue))
+	c.Assert(err, IsNil)
+
+	// sign url for get object
+	str, err = s.bucket.SignURL(objectName, HTTPGet, 60)
+	c.Assert(err, IsNil)
+	c.Assert(strings.Contains(str, HTTPParamExpires+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamAccessKeyID+"="), Equals, true)
+	c.Assert(strings.Contains(str, HTTPParamSignature+"="), Equals, true)
+
+	// get object with url
+	body, err = s.bucket.GetObjectWithURL(str)
+	c.Assert(err, IsNil)
+	str, err = readBody(body)
+	c.Assert(err, IsNil)
+	c.Assert(str, Equals, objectValue)
+
+	err = s.bucket.DeleteObject(objectName)
+	c.Assert(err, IsNil)
+}
+
 // TestPutObjectType
 func (s *OssBucketSuite) TestPutObjectType(c *C) {
 	objectName := objectNamePrefix + "tptt"
@@ -1327,6 +1564,21 @@ func (s *OssBucketSuite) TestAppendObject(c *C) {
 	acl, err = s.bucket.GetObjectACL(objectName)
 	c.Assert(err, IsNil)
 	c.Assert(acl.ACL, Equals, string(ACLPublicRead))
+
+	err = s.bucket.DeleteObject(objectName)
+	c.Assert(err, IsNil)
+}
+
+// TestAppendObjectNegative
+func (s *OssBucketSuite) TestAppendObjectNegative(c *C) {
+	objectName := objectNamePrefix + "taon"
+	nextPos := int64(0)
+
+	nextPos, err := s.bucket.AppendObject(objectName, strings.NewReader("ObjectValue"), nextPos)
+	c.Assert(err, IsNil)
+
+	nextPos, err = s.bucket.AppendObject(objectName, strings.NewReader("ObjectValue"), 0)
+	c.Assert(err, NotNil)
 
 	err = s.bucket.DeleteObject(objectName)
 	c.Assert(err, IsNil)

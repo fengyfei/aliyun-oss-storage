@@ -1,8 +1,8 @@
-hash: 6dc77d0ca89e63e1cab50ff4c26ca4b27fde35cfe01549c07c6cd04dc77f9157
-updated: 2017-08-02T11:07:33.312765269+08:00
+hash: cc011446bcc7c30ae209c03a6e127b1fec138eb3ca215f703290a46f7dff7ad8
+updated: 2017-08-07T11:55:37.956606878+08:00
 imports:
 - name: github.com/aliyun/aliyun-oss-go-sdk
-  version: 238969d88b7eabd7102466f4097dd776cb8bba34
+  version: 2d4691ac1af4fa0197178f31d8f9ca23798aa8e3
   subpackages:
   - oss
 - name: github.com/boltdb/bolt
@@ -18,7 +18,7 @@ imports:
 - name: github.com/go-playground/universal-translator
   version: 71201497bace774495daed26a3874fd339e0b538
 - name: github.com/hashicorp/hcl
-  version: 630949a3c5fa3c613328e1b8256052cbc2327c9b
+  version: 392dba7d905ed5d04a5794ba89f558b27e2ba1ca
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -44,29 +44,29 @@ imports:
   - log
   - random
 - name: github.com/magiconair/properties
-  version: 51463bfca2576e06c62a8504b5c0f06d61312647
+  version: be5ece7dd465ab0765a9682137865547526d1dfb
 - name: github.com/mattn/go-colorable
-  version: 941b50ebc6efddf4c41c8e4537a5f68a4e686b24
+  version: 6c0fd4aa6ec5818d5e3ea9e03ae436972a6c5a9a
 - name: github.com/mattn/go-isatty
   version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
 - name: github.com/mitchellh/mapstructure
-  version: 53818660ed4955e899c0bcafa97299a388bd7c8e
-- name: github.com/pelletier/go-buffruneio
-  version: c37440a7cf42ac63b919c752ca73a85067e05992
+  version: d0303fe809921458f417bcf828397a65db30a7e4
 - name: github.com/pelletier/go-toml
-  version: e32a2e04744250647a72bf17da1b09befc03b6b1
+  version: 69d355db5304c0f7f809a2edc054553e7142f016
+- name: github.com/satori/go.uuid
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/spf13/afero
   version: 9be650865eab0c12963d8753212f4f9c66cdcf12
   subpackages:
   - mem
 - name: github.com/spf13/cast
-  version: ce135a4ebeee6cfe9a26c93ee0d37825f26113c7
+  version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
 - name: github.com/spf13/jwalterweatherman
-  version: fa7ca7e836cf3a8bb4ebf799f472c12d7e903d66
+  version: 0efa5202c04663c757d84f90f5219c1250baf94f
 - name: github.com/spf13/pflag
-  version: d16db1e50e33dff1b6cdf37596cef36742128670
+  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/spf13/viper
-  version: 84f94806c67f59dd7ae87bc5351f7a9c94a4558d
+  version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
 - name: github.com/valyala/bytebufferpool
   version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
 - name: github.com/valyala/fasttemplate
@@ -84,21 +84,21 @@ imports:
   - internal/exit
   - zapcore
 - name: golang.org/x/crypto
-  version: 9ef620b9ca2f82b55030ffd4f41327fa9e77a92c
+  version: 42ff06aea7c329876e5a0fe94acc96902accf0ad
   subpackages:
   - acme
   - acme/autocert
 - name: golang.org/x/sys
-  version: 9a7256cb28ed514b4e1e5f68959914c4c28a92e0
+  version: d8f5ea21b9295e315e612b4bcf4bedea93454d4d
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: c3b0cbb40eb9a862fdc91f79bed8c7ac8e7a36e8
+  version: 3bd178b88a8180be2df394a1fbb81313916f0e7b
   subpackages:
   - transform
   - unicode/norm
 - name: gopkg.in/go-playground/validator.v9
   version: 0f6f568263a1ab5105b57f66f446d2625e4f545c
 - name: gopkg.in/yaml.v2
-  version: a3f3340b5840cee44f372bddb5880fcbc419b46a
+  version: 25c4ec802a7d637f88d584ab26798e94ad14c13b
 testImports: []
