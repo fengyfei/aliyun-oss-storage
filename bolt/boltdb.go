@@ -114,15 +114,15 @@ func GetProjectList() map[string]string {
 	return projectList
 }
 
-func GetProjectSecure(pname string) string {
+func GetProjectSecure(pname string) (string, error) {
 	var secure []byte
 
-	BoltDb.Update(func(tx *bolt.Tx) error {
+	err := BoltDb.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(general.BoltProjectList))
 		secure = bucket.Get([]byte(pname))
 
 		return nil
 	})
 
-	return string(secure)
+	return string(secure), err
 }
