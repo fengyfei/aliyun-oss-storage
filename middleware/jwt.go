@@ -37,6 +37,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 
+	"aliyun-oss-storage/bolt"
 	"aliyun-oss-storage/log"
 )
 
@@ -121,7 +122,7 @@ func decodingJWT(tokenString, secret, name string) error {
 }
 
 func getSecret(project string) string {
-	return project
+	return bolt.GetProjectSecure(project)
 }
 
 func jwtFromHeader(header, authSchema string) jwtExtra {
