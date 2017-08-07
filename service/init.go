@@ -38,7 +38,6 @@ import (
 	"aliyun-oss-storage/router"
 	"aliyun-oss-storage/bolt"
 	"aliyun-oss-storage/handler"
-	"aliyun-oss-storage/log"
 )
 
 func startService() {
