@@ -118,7 +118,14 @@ func decodingJWT(tokenString, secret, name string) error {
 }
 
 func getSecret(project string) string {
-	return bolt.GetProjectSecure(project)
+	secret, err := bolt.GetProjectSecure(project)
+	if err != nil {
+		log.Logger.Error("Get secret crash with error:", err)
+		
+		return ""
+	}
+
+	return secret
 }
 
 func jwtFromHeader(header, authSchema string) jwtExtra {
