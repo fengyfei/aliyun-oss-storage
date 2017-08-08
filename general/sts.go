@@ -30,8 +30,9 @@
 package general
 
 const (
-	TempKey     = "LTAI24bPTHC8Tyfw"
-	TempSecret  = "J2Hy5FepMWDaO560yiT1Tty7LsD9Qj"
-	RoleAcs     = "acs:ram::1042201469700617:role/anxiang"
-	StsEndpoint = "https://sts.aliyuncs.com/?"
+	TempKey         = "LTAI24bPTHC8Tyfw"
+	TempSecret      = "J2Hy5FepMWDaO560yiT1Tty7LsD9Qj"
+	RoleAcs         = "acs:ram::1042201469700617:role/anxiang"
+	StsEndpoint     = "https://sts.aliyuncs.com/?"
+	DurationSeconds = "1800"
 )

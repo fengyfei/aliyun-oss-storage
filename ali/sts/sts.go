@@ -57,6 +57,7 @@ func GenerateSignatureUrl() (string, error) {
 	assumeUrl += "&Version=2015-04-01"
 	assumeUrl += "&Action=AssumeRole"
 	assumeUrl += "&SignatureNonce=" + uuid.NewV4().String()
+	assumeUrl += "&DurationSeconds=" + general.DurationSeconds
 
 	// 解析成V type
 	signToString, err := url.ParseQuery(assumeUrl)
