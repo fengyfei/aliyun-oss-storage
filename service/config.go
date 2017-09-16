@@ -32,7 +32,7 @@ package main
 import (
 	"github.com/spf13/viper"
 
-	"aliyun-oss-storage/log"
+	"github.com/fengyfei/aliyun-oss-storage/log"
 )
 
 type workServerConfig struct {

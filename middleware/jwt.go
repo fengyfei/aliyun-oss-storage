@@ -37,8 +37,8 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 
-	"aliyun-oss-storage/bolt"
-	"aliyun-oss-storage/log"
+	"github.com/fengyfei/aliyun-oss-storage/bolt"
+	"github.com/fengyfei/aliyun-oss-storage/log"
 )
 
 const (

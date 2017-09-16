@@ -32,7 +32,7 @@ package router
 import (
 	"github.com/labstack/echo"
 
-	"aliyun-oss-storage/handler"
+	"github.com/fengyfei/aliyun-oss-storage/handler"
 )
 
 // InitRouter initial router

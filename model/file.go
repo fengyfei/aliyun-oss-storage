@@ -34,7 +34,7 @@ import (
 	"bufio"
 	"mime/multipart"
 
-	"aliyun-oss-storage/ali"
+	"github.com/fengyfei/aliyun-oss-storage/ali"
 )
 
 // FileProviderService is an receiver .

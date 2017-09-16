@@ -34,8 +34,8 @@ import (
 
 	"github.com/labstack/echo"
 
-	"aliyun-oss-storage/ali/sts"
-	"aliyun-oss-storage/log"
+	"github.com/fengyfei/aliyun-oss-storage/ali/sts"
+	"github.com/fengyfei/aliyun-oss-storage/log"
 )
 
 func GetStsCredential(c echo.Context) error {

@@ -34,7 +34,7 @@ import (
 
 	"github.com/boltdb/bolt"
 
-	"aliyun-oss-storage/general"
+	"github.com/fengyfei/aliyun-oss-storage/general"
 )
 
 var BoltDb *bolt.DB

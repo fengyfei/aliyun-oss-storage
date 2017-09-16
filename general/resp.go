@@ -30,7 +30,7 @@
 package general
 
 import (
-	"aliyun-oss-storage/general/errcode"
+	"github.com/fengyfei/aliyun-oss-storage/general/errcode"
 )
 
 // ErrorResp response error

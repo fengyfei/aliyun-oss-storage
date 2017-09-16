@@ -32,7 +32,7 @@ package model
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 
-	"aliyun-oss-storage/ali"
+	"github.com/fengyfei/aliyun-oss-storage/ali"
 )
 
 type BucketProviderService struct{}

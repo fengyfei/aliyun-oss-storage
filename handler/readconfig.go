@@ -34,8 +34,8 @@ import (
 
 	"github.com/labstack/echo"
 
-	"aliyun-oss-storage/bolt"
-	"aliyun-oss-storage/log"
+	"github.com/fengyfei/aliyun-oss-storage/bolt"
+	"github.com/fengyfei/aliyun-oss-storage/log"
 )
 
 var (

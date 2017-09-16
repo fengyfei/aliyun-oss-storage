@@ -33,7 +33,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"aliyun-oss-storage/log"
+	"github.com/fengyfei/aliyun-oss-storage/log"
 )
 
 var ErrNotFound = errors.New("Database Not Found")

@@ -33,11 +33,11 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
-	"aliyun-oss-storage/ali"
-	"aliyun-oss-storage/general"
-	"aliyun-oss-storage/router"
-	"aliyun-oss-storage/bolt"
-	"aliyun-oss-storage/handler"
+	"github.com/fengyfei/aliyun-oss-storage/ali"
+	"github.com/fengyfei/aliyun-oss-storage/general"
+	"github.com/fengyfei/aliyun-oss-storage/router"
+	"github.com/fengyfei/aliyun-oss-storage/bolt"
+	"github.com/fengyfei/aliyun-oss-storage/handler"
 )
 
 func startService() {

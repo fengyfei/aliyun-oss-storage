@@ -37,11 +37,11 @@ import (
 
 	"github.com/labstack/echo"
 
-	"aliyun-oss-storage/bolt"
-	"aliyun-oss-storage/general/errcode"
-	"aliyun-oss-storage/log"
-	"aliyun-oss-storage/middleware"
-	"aliyun-oss-storage/model"
+	"github.com/fengyfei/aliyun-oss-storage/bolt"
+	"github.com/fengyfei/aliyun-oss-storage/general/errcode"
+	"github.com/fengyfei/aliyun-oss-storage/log"
+	"github.com/fengyfei/aliyun-oss-storage/middleware"
+	"github.com/fengyfei/aliyun-oss-storage/model"
 )
 
 func UploadFileHandler(c echo.Context) error {
