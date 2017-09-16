@@ -31,8 +31,8 @@ package handler
 
 import (
 	"net/http"
+	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/labstack/echo"
@@ -45,8 +45,6 @@ import (
 )
 
 func UploadFileHandler(c echo.Context) error {
-	var kind string
-
 	file, err := c.FormFile("file")
 	if err != nil {
 		log.Logger.Error("UploadFileHandler FormFile err: %v", err)
@@ -56,15 +54,9 @@ func UploadFileHandler(c echo.Context) error {
 	hash := c.FormValue("hash")
 	project := c.Get(middleware.ProName).(string)
 
-	suffixs := strings.Split(file.Filename, ".")
-	if len(suffixs) <= 1 {
-		kind = ""
-	} else {
-		kind = "." + suffixs[len(suffixs)-1]
-	}
-
+	ext := filepath.Ext(file.Filename)
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	fileName := project + "/" + timestamp + kind
+	fileName := project + "/" + timestamp + ext
 
 	src, err := file.Open()
 	if err != nil {
